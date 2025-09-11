@@ -1,0 +1,44 @@
+{
+  "name": "photographic-memory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Photographic Memory Desktop App - AI-powered screen memory system",
+  "workspaces": [
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "start:all": "concurrently \"pnpm -C services/ingest-bridge start\" \"pnpm -C services/search-api start\"",
+    "dev:all": "concurrently \"pnpm -C services/ingest-bridge dev\" \"pnpm -C services/search-api dev\"",
+    "build:all": "pnpm -r build",
+    "test:all": "pnpm -r test",
+    "test:smoke": "pnpm -C scripts smoke-test",
+    "demo:verify": "pnpm -C scripts demo-verify",
+    "demo:seed": "pnpm -C scripts seed-demo-data",
+    "clean": "pnpm -r clean && rm -rf node_modules",
+    "setup": "pnpm install && pnpm -C scripts setup-environment"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/photographic-memory.git"
+  },
+  "keywords": [
+    "ai",
+    "memory",
+    "screen-capture",
+    "search",
+    "macos",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
