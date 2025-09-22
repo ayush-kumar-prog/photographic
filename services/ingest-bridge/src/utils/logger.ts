@@ -19,3 +19,10 @@ if (process.env.NODE_ENV !== 'production') {
     format: winston.format.simple()
   }));
 }
+
+/**
+ * Create a child logger with a specific module name
+ */
+export function createLogger(module: string): winston.Logger {
+  return logger.child({ module });
+}

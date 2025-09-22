@@ -127,7 +127,7 @@ pnpm run test:smoke # Should pass initial checks
 
 #### Technical Tasks
 1. **Screenpipe Installation**
-   ```bash
+   ```bashd
    # Download and install Screenpipe
    # Add to vendor/screenpipe as submodule or binary
    git submodule add https://github.com/mediar-ai/screenpipe vendor/screenpipe

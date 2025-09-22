@@ -64,3 +64,4 @@ export interface SearchResult {
   sourceReliability: number;
   finalScore: number;
 }
+

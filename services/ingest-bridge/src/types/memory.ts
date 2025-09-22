@@ -1,17 +1,18 @@
 /**
- * Core memory object schema - canonical representation
- * Based on the MVP specification
+ * Memory object types for ingest bridge service
+ * Copied from mem-core to avoid import issues during development
  */
+
 export interface MemoryObject {
   id: string;                    // uuid
   ts: number;                    // epoch ms
-  session_id?: string;           // optional clustering
+  session_id?: string | null;    // optional clustering
   app: string;                   // "Safari", "Code", "Apex"
-  window_title?: string;
-  url?: string;
-  url_host?: string;             // "amazon.com", "youtube.com"
-  media_path?: string;           // file://… (frame) or video segment ref
-  thumb_path?: string;           // cached thumbnail
+  window_title?: string | null;
+  url?: string | null;
+  url_host?: string | null;      // "amazon.com", "youtube.com"
+  media_path?: string | null;    // file://… (frame) or video segment ref
+  thumb_path?: string | null;    // cached thumbnail
   ocr_text: string;              // extracted via Screenpipe OCR
   asr_text?: string | null;      // optional audio transcript
   entities?: string[];           // optional
@@ -64,4 +65,3 @@ export interface MemoryRow {
   media_path: string | null;
   thumb_path: string | null;
 }
-

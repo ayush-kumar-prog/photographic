@@ -38,3 +38,4 @@ export function extractDominantColors(imagePath: string): Promise<string[]> {
   // Would use sharp or similar library in implementation
   return Promise.resolve(['#ffffff', '#000000']);
 }
+

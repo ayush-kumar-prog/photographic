@@ -49,3 +49,4 @@ export const SearchResponseSchema = z.object({
   confidence: z.number().min(0).max(1),
   cards: z.array(SearchCardSchema),
 });
+
