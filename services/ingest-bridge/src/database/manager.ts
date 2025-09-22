@@ -231,8 +231,8 @@ export class DatabaseManager {
       this.db!.all(`
         SELECT m.* FROM memories m
         JOIN memories_fts fts ON m.id = fts.id
-        WHERE memories_fts MATCH ?
-        ORDER BY rank, m.ts DESC
+        WHERE fts.memories_fts MATCH ?
+        ORDER BY fts.rank, m.ts DESC
         LIMIT ? OFFSET ?
       `, [query, limit, offset], (err, results) => {
         if (err) {
