@@ -1,0 +1,8 @@
+# This file ensures the data directory exists in git
+# The data directory contains runtime files that are ignored by .gitignore:
+# - SQLite databases (*.db, *.db-shm, *.db-wal)
+# - Chroma vector database files
+# - Generated thumbnails
+# - Media files and logs
+# 
+# These files are created automatically when the services run.

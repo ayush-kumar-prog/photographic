@@ -10,11 +10,9 @@ dist/
 .env
 .env.local
 
-# Data directories
-data/sqlite/*.db
-data/chroma/
-data/thumbs/
-data/media/
+# Data directories (runtime data, not source code)
+data/
+!data/.gitkeep
 
 # Logs
 logs/
