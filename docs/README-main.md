@@ -27,19 +27,19 @@ This is a **multi-service desktop application** that captures, processes, and se
        ✅                        ✅                        ✅                        🔄 NEXT
 
                                                     ┌──────────────────┐
-                                                    │  SwiftUI Overlay │
+                                                    │ Liquid Glass UI  │
                                                     │                  │
-                                                    │ • ⌥⌘M Hotkey     │
-                                                    │ • Glass UI       │
-                                                    │ • Visual Results │
-                                                    │ • macOS Native   │
+                                                    │ • ⌘⇧M Hotkey     │
+                                                    │ • Liquid Glass   │
+                                                    │ • SOTA Animations│
+                                                    │ • Futuristic UX  │
                                                     └──────────────────┘
-                                                           ⏳ PENDING
+                                                           🔄 NEXT
 ```
 
-## ✅ Current Status: Steps 1-5 Complete (62% Done)
+## ✅ Current Status: Step 5 COMPLETE (75% Done)
 
-**Production-ready search engine with hybrid retrieval and confidence scoring**
+**🎉 PRODUCTION-READY SEARCH API WITH FULL REST ENDPOINTS**
 
 ### 🚀 What's Working Right Now
 
@@ -48,9 +48,10 @@ This is a **multi-service desktop application** that captures, processes, and se
 - ✅ **Hybrid Storage**: SQLite FTS5 + Chroma vector database
 - ✅ **AI Embeddings**: OpenAI text-embedding-3-large integration (3072 dimensions)
 - ✅ **Thumbnail Generation**: Sharp-based image processing for visual search
-- ✅ **Search API**: Hybrid search with confidence scoring and query understanding
+- ✅ **REST Search API**: Hybrid search with confidence scoring (port 3002)
+- ✅ **Query Understanding**: Natural language parsing with time/app hints  
 - ✅ **Nugget Extraction**: YouTube titles, Amazon prices, game scores
-- ✅ **Performance**: <700ms P95 search latency, intelligent caching
+- ✅ **Performance**: <700ms search latency with intelligent LRU caching
 - ✅ **Production Ready**: Error handling, monitoring, comprehensive test suite
 
 ### 🧠 Data Flow Explained

@@ -75,10 +75,8 @@ export class EmbeddingsService {
         logger.info('Created Chroma data directory', { dataDir: this.chromaDataDir });
       }
 
-      // Initialize Chroma client with persistent storage
-      this.chroma = new ChromaClient({
-        path: this.chromaDataDir
-      });
+      // Initialize Chroma client - use in-memory for now (can be changed to server mode later)
+      this.chroma = new ChromaClient();
 
       // Create or get collection
       try {
