@@ -8,15 +8,24 @@
     "packages/*"
   ],
   "scripts": {
-    "start:all": "concurrently \"pnpm -C services/ingest-bridge start\" \"pnpm -C services/search-api start\"",
-    "dev:all": "concurrently \"pnpm -C services/ingest-bridge dev\" \"pnpm -C services/search-api dev\"",
+    "start:screenpipe": "./scripts/start-screenpipe.sh",
+    "start:ingest": "pnpm -C services/ingest-bridge start",
+    "start:search": "pnpm -C services/search-api start",
+    "start:all": "concurrently \"pnpm start:ingest\" \"pnpm start:search\"",
+    "dev:ingest": "pnpm -C services/ingest-bridge dev",
+    "dev:search": "pnpm -C services/search-api dev",
+    "dev:all": "concurrently \"pnpm dev:ingest\" \"pnpm dev:search\"",
     "build:all": "pnpm -r build",
     "test:all": "pnpm -r test",
-    "test:smoke": "pnpm -C scripts smoke-test",
-    "demo:verify": "pnpm -C scripts demo-verify",
-    "demo:seed": "pnpm -C scripts seed-demo-data",
+    "test:components": "./scripts/run-all-tests.sh",
+    "test:database": "node scripts/test-database.js",
+    "test:thumbnails": "node scripts/test-thumbnails.js",
+    "test:embeddings": "node scripts/test-embeddings.js",
+    "test:core": "node scripts/test-core-functionality.js",
+    "verify:system": "./scripts/verify-system.sh",
+    "docs": "echo 'See docs/ folder for all documentation'",
     "clean": "pnpm -r clean && rm -rf node_modules",
-    "setup": "pnpm install && pnpm -C scripts setup-environment"
+    "setup": "pnpm install && pnpm build:all"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
