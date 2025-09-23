@@ -11,6 +11,7 @@
     "start:screenpipe": "./scripts/start-screenpipe.sh",
     "start:ingest": "pnpm -C services/ingest-bridge start",
     "start:search": "pnpm -C services/search-api start",
+    "test:search": "pnpm -C services/search-api test:nugget-extractors",
     "start:all": "concurrently \"pnpm start:ingest\" \"pnpm start:search\"",
     "dev:ingest": "pnpm -C services/ingest-bridge dev",
     "dev:search": "pnpm -C services/search-api dev",

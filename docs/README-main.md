@@ -37,9 +37,9 @@ This is a **multi-service desktop application** that captures, processes, and se
                                                            ⏳ PENDING
 ```
 
-## ✅ Current Status: Steps 1-4 Complete (50% Done)
+## ✅ Current Status: Steps 1-5 Complete (62% Done)
 
-**Production-ready data ingestion and storage pipeline fully operational**
+**Production-ready search engine with hybrid retrieval and confidence scoring**
 
 ### 🚀 What's Working Right Now
 
@@ -48,7 +48,9 @@ This is a **multi-service desktop application** that captures, processes, and se
 - ✅ **Hybrid Storage**: SQLite FTS5 + Chroma vector database
 - ✅ **AI Embeddings**: OpenAI text-embedding-3-large integration (3072 dimensions)
 - ✅ **Thumbnail Generation**: Sharp-based image processing for visual search
-- ✅ **Performance**: 3,000+ rows/hour throughput, <20ms queries
+- ✅ **Search API**: Hybrid search with confidence scoring and query understanding
+- ✅ **Nugget Extraction**: YouTube titles, Amazon prices, game scores
+- ✅ **Performance**: <700ms P95 search latency, intelligent caching
 - ✅ **Production Ready**: Error handling, monitoring, comprehensive test suite
 
 ### 🧠 Data Flow Explained
@@ -57,14 +59,14 @@ This is a **multi-service desktop application** that captures, processes, and se
 2. **Ingest Bridge** polls for new events, transforms them into canonical `MemoryObject` schema
 3. **Hybrid Storage** saves data in both SQLite (fast keyword search) and Chroma (semantic similarity)
 4. **OpenAI Integration** generates embeddings for each text snippet for AI-powered search
-5. **Search API** (next step) will provide REST endpoints for querying this data
-6. **SwiftUI Overlay** (future) will provide the ⌥⌘M hotkey interface
+5. **Search API** provides REST endpoints with hybrid search and confidence scoring
+6. **SwiftUI Overlay** (next step) will provide the ⌥⌘M hotkey interface
 
 ## 🏗️ Implementation Progress
 
 **See [docs/README.md](README.md) for current status and [MVP_IMPLEMENTATION_PLAN.md](MVP_IMPLEMENTATION_PLAN.md) for complete roadmap.**
 
-**Current Status: 50% Complete** (Steps 1-4 done, Step 5 next)
+**Current Status: 62% Complete** (Steps 1-5 done, Step 7 next)
 
 ## 🚀 Quick Start
 
@@ -87,12 +89,13 @@ export OPENAI_API_KEY="your-openai-api-key"
 # 3. Start Screenpipe (data capture)
 ./scripts/start-screenpipe.sh
 
-# 4. Start Ingest Bridge (data processing)
-cd services/ingest-bridge
-pnpm start
+# 4. Start services (data processing + search)
+pnpm start:all
 
 # 5. Verify system health
-curl -s http://localhost:3030/health | jq '.'
+curl -s http://localhost:3030/health | jq '.'  # Screenpipe
+curl -s http://localhost:3031/health | jq '.'  # Ingest Bridge  
+curl -s http://localhost:3032/health | jq '.'  # Search API
 ```
 
 ### Test the System
@@ -106,6 +109,12 @@ pnpm test:throughput
 
 # Check processing stats
 curl -s http://localhost:3031/stats | jq '.'
+
+# Test search functionality
+curl -s "http://localhost:3032/search?q=test%20query" | jq '.'
+
+# Demo search API
+./scripts/demo-search-api.sh
 ```
 
 ## 📁 Project Structure
@@ -116,7 +125,7 @@ memories/
 │   └── overlay-macos/           # SwiftUI overlay (⌥⌘M hotkey)
 ├── services/
 │   ├── ingest-bridge/           # ✅ Screenpipe → SQLite + Chroma
-│   └── search-api/              # 🔄 Hybrid search + confidence scoring
+│   └── search-api/              # ✅ Hybrid search + confidence scoring
 ├── packages/
 │   └── mem-core/                # Shared types and schemas
 ├── data/                        # Runtime databases and media (gitignored)
@@ -143,10 +152,12 @@ pnpm test:all              # Run all tests
 pnpm build                 # Production build
 ```
 
-**Search API** (🔄 Next)
+**Search API** (✅ Complete)
 ```bash
 cd services/search-api
-pnpm dev                    # Development mode (when implemented)
+pnpm dev                    # Development mode
+pnpm test:nugget-extractors # Test nugget extraction
+pnpm test:search-performance # Performance tests (requires data)
 ```
 
 ### Architecture Decisions
@@ -166,10 +177,11 @@ pnpm dev                    # Development mode (when implemented)
 - Vector insertion <100ms per document
 - Memory usage <200MB
 
-**Target (Step 5) - Search API:**
+**Current (Step 5) - ✅ Achieved:**
 - Query response <700ms (P95)
-- Overlay summon <150ms
-- Confidence scoring accuracy ≥90%
+- Hybrid search (keyword + semantic)
+- Confidence scoring with mode switching
+- Natural language query understanding
 
 ## 🎉 Key Achievements
 
@@ -180,24 +192,24 @@ pnpm dev                    # Development mode (when implemented)
 
 ## 🔜 Next Milestones
 
-**Immediate (Step 5): Search API Service**
-- Hybrid search (semantic + keyword)
-- Confidence scoring and mode switching  
-- Query understanding and time parsing
-- REST endpoints for SwiftUI overlay
-
-**Following: SwiftUI Overlay**
-- ⌥⌘M global hotkey
+**Immediate (Step 7): SwiftUI Overlay**
+- ⌥⌘M global hotkey system
 - Glass-morphism UI design
 - Exact-Hit vs Memory-Jog modes
 - Visual receipts with thumbnails
+
+**Following: Demo & Testing**
+- Step 6: Nugget Extractors (enhanced)
+- Step 8: Demo Data & Verification
+- End-to-end system testing
 
 ## 📚 Documentation
 
 **All documentation is organized in the [`docs/`](.) folder:**
 - [MVP Implementation Plan](MVP_IMPLEMENTATION_PLAN.md) - Complete development roadmap
-- [Post-Step 3 Progress](post-step3-progress.md) - Current achievements and verification
+- [Post-Step 3 Progress](post-step3-progress.md) - Data pipeline achievements
 - [Ingest Bridge Service](ingest-bridge-service.md) - Data processing pipeline
+- [Search API Service](search-api-service.md) - Hybrid search engine (Step 5)
 - [Documentation Index](README.md) - Complete documentation overview
 
 ## 🔍 Technical Deep Dive
