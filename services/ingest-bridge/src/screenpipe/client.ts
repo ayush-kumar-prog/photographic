@@ -53,25 +53,32 @@ export interface ScreenpipeSearchResult {
 }
 
 export interface ScreenpipeSearchMatch {
-  type: 'ocr' | 'audio' | 'ui';
-  timestamp: string;
-  file_path: string;
-  ocr_text?: string;
-  transcription?: string;
-  app_name?: string;
-  window_name?: string;
-  frame_id?: string;
-  focused?: boolean;
-  browser_url?: string;
+  type: 'OCR' | 'Audio' | 'UI';
+  content: {
+    frame_id?: number;
+    text?: string;
+    timestamp: string;
+    file_path: string;
+    offset_index?: number;
+    app_name?: string;
+    window_name?: string;
+    tags?: string[];
+    frame?: string | null;
+    frame_name?: string;
+    browser_url?: string | null;
+    focused?: boolean;
+    transcription?: string;
+  };
 }
 
 export interface ScreenpipeHealthStatus {
-  status: 'healthy' | 'unhealthy';
+  status: 'healthy' | 'unhealthy' | 'degraded';
   last_frame_timestamp?: number;
   last_audio_timestamp?: number;
   frame_status: 'ok' | 'stale' | 'error';
-  audio_status: 'ok' | 'stale' | 'error';
-  db_health: 'ok' | 'error';
+  audio_status: 'ok' | 'stale' | 'error' | 'disabled';
+  ui_status?: 'ok' | 'stale' | 'error' | 'not_started';
+  db_health?: 'ok' | 'error';
 }
 
 /**
@@ -201,34 +208,68 @@ export class ScreenpipeClient {
       limit,
       offset: 0,
       content_type: 'ocr', // Focus on OCR (screen text) for MVP
-      include_frames: true
+      include_frames: false // Disable frame extraction to prevent crashes with corrupted videos
     };
 
     // If we have a timestamp, only get events after that time
-    if (sinceTimestamp) {
+    if (sinceTimestamp && !isNaN(sinceTimestamp) && sinceTimestamp > 0) {
       query.start_time = new Date(sinceTimestamp).toISOString();
     }
 
     try {
       const result = await this.search(query);
       
-      const events: ScreenpipeEvent[] = result.data.map(match => ({
-        id: match.frame_id || `${match.timestamp}-${Math.random()}`,
-        timestamp: new Date(match.timestamp).getTime(),
-        app: match.app_name || 'unknown',
-        window_title: match.window_name || '',
-        url: match.browser_url,
-        ocr_text: match.ocr_text || '',
-        media_path: match.file_path,
-        frame_id: match.frame_id,
-        content_type: match.type,
-        focused: match.focused,
-        browser_url: match.browser_url
-      }));
+      // Debug: Log first few raw results to understand timestamp format
+      if (result.data.length > 0) {
+        logger.debug('Sample raw Screenpipe data', {
+          sampleCount: Math.min(2, result.data.length),
+          samples: result.data.slice(0, 2).map(match => ({
+            type: match.type,
+            timestamp: match.content.timestamp,
+            timestampType: typeof match.content.timestamp,
+            frameId: match.content.frame_id,
+            appName: match.content.app_name
+          }))
+        });
+      }
+      
+      const validEvents: ScreenpipeEvent[] = [];
+      
+      for (const match of result.data) {
+        // Handle the nested content structure from Screenpipe
+        const content = match.content || match;
+        const timestamp = new Date(content.timestamp).getTime();
+        
+        // Skip events with invalid timestamps
+        if (isNaN(timestamp)) {
+          logger.warn('Skipping event with invalid timestamp', { 
+            rawTimestamp: content.timestamp,
+            frameId: content.frame_id,
+            matchType: match.type
+          });
+          continue;
+        }
+        
+        validEvents.push({
+          id: content.frame_id?.toString() || `${content.timestamp}-${Math.random()}`,
+          timestamp,
+          app: content.app_name || 'unknown',
+          window_title: content.window_name || '',
+          url: content.browser_url || undefined,
+          ocr_text: content.text || '',
+          media_path: content.file_path,
+          frame_id: content.frame_id?.toString(),
+          content_type: match.type.toLowerCase() as 'ocr' | 'audio' | 'ui',
+          focused: content.focused,
+          browser_url: content.browser_url || undefined
+        });
+      }
+      
+      const events = validEvents;
 
       logger.debug('Retrieved recent events', {
         eventCount: events.length,
-        sinceTimestamp: sinceTimestamp ? new Date(sinceTimestamp).toISOString() : 'beginning',
+        sinceTimestamp: (sinceTimestamp && !isNaN(sinceTimestamp)) ? new Date(sinceTimestamp).toISOString() : 'beginning',
         timeRange: events.length > 0 ? 
           `${new Date(events[events.length - 1].timestamp).toISOString()} to ${new Date(events[0].timestamp).toISOString()}` : 'none'
       });

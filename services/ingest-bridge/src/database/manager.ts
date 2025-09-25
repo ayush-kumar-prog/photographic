@@ -30,9 +30,11 @@ export class DatabaseManager {
   private dataDir: string;
   private isInitialized: boolean = false;
 
-  constructor(dataDir: string = './data/sqlite') {
-    this.dataDir = dataDir;
-    this.dbPath = path.join(dataDir, 'memories.db');
+  constructor(dataDir: string = '../../data/sqlite') {
+    // If running from services/ingest-bridge/dist, go up to project root
+    const projectRoot = process.env.PROJECT_ROOT || path.resolve(__dirname, '../../../..');
+    this.dataDir = path.resolve(projectRoot, 'data/sqlite');
+    this.dbPath = path.join(this.dataDir, 'memories.db');
     logger.info('DatabaseManager initialized', { dbPath: this.dbPath });
   }
 
@@ -166,13 +168,14 @@ export class DatabaseManager {
     });
   }
 
-  async storeMemoryObject(memoryObject: MemoryObjectWithEmbedding): Promise<void> {
+  async storeMemoryObject(memoryObject: MemoryObjectWithEmbedding): Promise<boolean> {
     if (!this.db) throw new Error('Database not initialized');
 
     return new Promise((resolve, reject) => {
-      logger.debug('Storing memory object', { 
+      logger.info('💾 ATTEMPTING TO STORE MEMORY', { 
         id: memoryObject.id, 
         app: memoryObject.app,
+        windowTitle: memoryObject.window_title?.substring(0, 50),
         textLength: memoryObject.ocr_text?.length || 0,
         hasEmbedding: !!memoryObject.embedding,
         videoProcessed: memoryObject.video_processed
@@ -207,15 +210,23 @@ export class DatabaseManager {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, params, function(err) {
         if (err) {
-          logger.error('Failed to store memory object:', err);
-          reject(err);
+          logger.error('❌ DATABASE STORAGE FAILED', {
+            error: err.message,
+            errorCode: err.code,
+            app: memoryObject.app,
+            id: memoryObject.id,
+            paramsLength: params.length,
+            appCharCodes: memoryObject.app.split('').map(c => c.charCodeAt(0))
+          });
+          resolve(false); // Return false instead of rejecting
         } else {
-          logger.debug('Memory object stored successfully', { 
+          logger.info('✅ DATABASE STORAGE SUCCESS', { 
             id: memoryObject.id,
             app: memoryObject.app,
-            timestamp: new Date(memoryObject.ts).toISOString()
+            timestamp: new Date(memoryObject.ts).toISOString(),
+            rowsChanged: this.changes
           });
-          resolve();
+          resolve(true); // Return true for success
         }
       });
     });
