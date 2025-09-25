@@ -1,0 +1,81 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "MemoryOverlay-arm64-apple-macosx15.0-debug.exe": ["<MemoryOverlay-arm64-apple-macosx15.0-debug.exe>"]
+  "MemoryOverlay-arm64-apple-macosx15.0-debug.module": ["<MemoryOverlay-arm64-apple-macosx15.0-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<MemoryOverlay-arm64-apple-macosx15.0-debug.exe>","<MemoryOverlay-arm64-apple-macosx15.0-debug.module>"]
+  "test": ["<MemoryOverlay-arm64-apple-macosx15.0-debug.exe>","<MemoryOverlay-arm64-apple-macosx15.0-debug.module>"]
+default: "main"
+nodes:
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay":
+    is-mutated: true
+commands:
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay-entitlement.plist":
+    tool: write-auxiliary-file
+    inputs: ["<entitlement-plist>","<com.apple.security.get-task-allow>"]
+    outputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay-entitlement.plist"]
+    description: "Write auxiliary file /Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay-entitlement.plist"
+
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/ContentView.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/LiquidGlassOverlay.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/LiquidSearchBar.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Managers.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Materials.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/MemoryCard.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Models.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/main.swift"]
+    outputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/sources"]
+    description: "Write auxiliary file /Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/sources"
+
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main.swift.o"]
+    outputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.product/Objects.LinkFileList"
+
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+
+  "<MemoryOverlay-arm64-apple-macosx15.0-debug.exe>":
+    tool: phony
+    inputs: ["<MemoryOverlay-arm64-apple-macosx15.0-debug.exe-CodeSigning>"]
+    outputs: ["<MemoryOverlay-arm64-apple-macosx15.0-debug.exe>"]
+
+  "<MemoryOverlay-arm64-apple-macosx15.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/Modules/MemoryOverlay.swiftmodule"]
+    outputs: ["<MemoryOverlay-arm64-apple-macosx15.0-debug.module>"]
+
+  "C.MemoryOverlay-arm64-apple-macosx15.0-debug.exe":
+    tool: shell
+    inputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.product/Objects.LinkFileList"]
+    outputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay"]
+    description: "Linking ./.build/arm64-apple-macosx/debug/MemoryOverlay"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug","-o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay","-module-name","MemoryOverlay","-Xlinker","-no_warn_duplicate_libraries","-emit-executable","-Xlinker","-alias","-Xlinker","_MemoryOverlay_main","-Xlinker","_main","-Xlinker","-rpath","-Xlinker","@loader_path","@/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.product/Objects.LinkFileList","-target","arm64-apple-macosx14.0","-Xlinker","-add_ast_path","-Xlinker","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/Modules/MemoryOverlay.swiftmodule","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g"]
+
+  "C.MemoryOverlay-arm64-apple-macosx15.0-debug.exe-entitlements":
+    tool: shell
+    inputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay-entitlement.plist"]
+    outputs: ["<MemoryOverlay-arm64-apple-macosx15.0-debug.exe-CodeSigning>"]
+    description: "Applying debug entitlements to ./.build/arm64-apple-macosx/debug/MemoryOverlay"
+    args: ["codesign","--force","--sign","-","--entitlements","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay-entitlement.plist","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay"]
+
+  "C.MemoryOverlay-arm64-apple-macosx15.0-debug.module":
+    tool: shell
+    inputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/ContentView.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/LiquidGlassOverlay.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/LiquidSearchBar.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Managers.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Materials.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/MemoryCard.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Models.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/main.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/sources"]
+    outputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main.swift.o","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/Modules/MemoryOverlay.swiftmodule"]
+    description: "Compiling Swift Module 'MemoryOverlay' (8 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","MemoryOverlay","-emit-dependencies","-emit-module","-emit-module-path","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/Modules/MemoryOverlay.swiftmodule","-output-file-map","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/output-file-map.json","-incremental","-c","@/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/sources","-I","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-enable-batch-mode","-index-store-path","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j11","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-Xfrontend","-entry-point-function-name","-Xfrontend","MemoryOverlay_main","-color-diagnostics","-swift-version","5","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","overlay_macos"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Package.swift","/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+
