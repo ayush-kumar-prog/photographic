@@ -1,0 +1,53 @@
+{
+  "": {
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/master.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/ContentView.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/ContentView.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/LiquidGlassOverlay.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidGlassOverlay.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/LiquidSearchBar.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/LiquidSearchBar.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Managers.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Managers.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Materials.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Materials.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/MemoryCard.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/MemoryCard.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/Models.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/Models.swiftdeps"
+  },
+  "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/Sources/MemoryOverlay/main.swift": {
+    "dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main.d",
+    "object": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main.swift.o",
+    "swiftmodule": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/kumar/Documents/Projects/memories/apps/overlay-macos/.build/arm64-apple-macosx/debug/MemoryOverlay.build/main.swiftdeps"
+  }
+}
