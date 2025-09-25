@@ -212,7 +212,7 @@ export class DatabaseManager {
         if (err) {
           logger.error('❌ DATABASE STORAGE FAILED', {
             error: err.message,
-            errorCode: err.code,
+            errorCode: (err as any).code,
             app: memoryObject.app,
             id: memoryObject.id,
             paramsLength: params.length,
