@@ -21,6 +21,43 @@ class HotkeyManager: ObservableObject {
     func toggleOverlay() {
         shouldShowOverlay.toggle()
         print("🎭 Overlay toggled: \(shouldShowOverlay)")
+        
+        // When showing overlay, ensure window becomes key and focused
+        if shouldShowOverlay {
+            DispatchQueue.main.async {
+                self.activateOverlayWindow()
+            }
+        }
+    }
+    
+    private func activateOverlayWindow() {
+        guard let panel = NSApplication.shared.windows.first else {
+            print("⚠️ No panel found to activate")
+            return
+        }
+        
+        print("🎯 Activating overlay panel...")
+        
+        // Force the panel to become key window
+        panel.makeKeyAndOrderFront(nil)
+        panel.orderFrontRegardless()
+        
+        // Try multiple activation approaches
+        NSApp.activate(ignoringOtherApps: true)
+        
+        // Force the panel to accept first responder
+        DispatchQueue.main.async {
+            panel.makeFirstResponder(panel.contentView)
+        }
+        
+        // Verify panel is now key
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            print("✅ Panel is key: \(panel.isKeyWindow)")
+            print("✅ Panel is main: \(panel.isMainWindow)")
+            print("✅ Panel can become key: \(panel.canBecomeKey)")
+            print("✅ Panel accepts first responder: \(panel.acceptsFirstResponder)")
+            print("✅ App is active: \(NSApp.isActive)")
+        }
     }
     
     private func registerGlobalHotkey() {
