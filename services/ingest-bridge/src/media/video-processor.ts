@@ -176,15 +176,25 @@ export class VideoProcessor {
 
   /**
    * Schedule video file cleanup after processing delay
+   * DISABLED: We need to keep video files for screenshot extraction
    */
   private scheduleVideoCleanup(filePath: string, reason: 'processed' | 'duplicate'): void {
-    setTimeout(async () => {
-      try {
-        await this.cleanupVideoFile(filePath, reason);
-      } catch (error: any) {
-        logger.error('Error during scheduled cleanup', { filePath, reason, error: error.message });
-      }
-    }, this.CLEANUP_DELAY_MS);
+    // DISABLED: Auto-cleanup is preventing screenshot extraction
+    // Videos are needed for the screenshot pipeline
+    logger.info('Video cleanup DISABLED - keeping file for screenshot extraction', { 
+      filePath, 
+      reason,
+      note: 'Videos needed for photographic memory feature'
+    });
+    
+    // Original cleanup code commented out:
+    // setTimeout(async () => {
+    //   try {
+    //     await this.cleanupVideoFile(filePath, reason);
+    //   } catch (error: any) {
+    //     logger.error('Error during scheduled cleanup', { filePath, reason, error: error.message });
+    //   }
+    // }, this.CLEANUP_DELAY_MS);
   }
 
   /**

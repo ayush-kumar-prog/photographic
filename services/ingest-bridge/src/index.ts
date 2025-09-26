@@ -9,6 +9,8 @@ import { DatabaseManager } from './database/manager';
 import { EmbeddingsService } from './embeddings/service';
 import { ThumbnailGenerator } from './media/thumbnails';
 import { VideoProcessor } from './media/video-processor';
+import { ScreenshotService } from './screenshots/service';
+import { ScreenshotAPIService } from './screenshots/api-service';
 
 class IngestBridge {
   private screenpipeClient: ScreenpipeClient;
@@ -16,6 +18,8 @@ class IngestBridge {
   private embeddingsService: EmbeddingsService;
   private thumbnailGenerator: ThumbnailGenerator;
   private videoProcessor: VideoProcessor;
+  private screenshotService: ScreenshotService;
+  private screenshotAPIService: ScreenshotAPIService;
   private isRunning = false;
 
   constructor() {
@@ -24,6 +28,8 @@ class IngestBridge {
     this.embeddingsService = new EmbeddingsService();
     this.thumbnailGenerator = new ThumbnailGenerator();
     this.videoProcessor = new VideoProcessor();
+    this.screenshotService = new ScreenshotService();
+    this.screenshotAPIService = new ScreenshotAPIService();
   }
 
   async start() {
@@ -177,7 +183,64 @@ class IngestBridge {
             }
           }
 
-          // 4. Create memory object
+          // 4. Extract screenshot from Screenpipe frame API
+          let screenshotPaths = null;
+          if (event.frame_id) {
+            try {
+              // Convert frame_id from string to number
+              const frameIdNum = parseInt(event.frame_id, 10);
+              if (!isNaN(frameIdNum)) {
+                screenshotPaths = await this.screenshotAPIService.extractAndStoreScreenshot(
+                  frameIdNum,
+                  event.id
+                );
+              } else {
+                logger.warn('Invalid frame_id format', { 
+                  frame_id: event.frame_id, 
+                  event_id: event.id 
+                });
+              }
+              if (screenshotPaths) {
+                logger.info('📸 Screenshot extracted from API', {
+                  eventId: event.id,
+                  frameId: event.frame_id,
+                  app: event.app,
+                  hasScreenshot: true,
+                  hasThumbnail: true
+                });
+              }
+            } catch (error) {
+              logger.warn('Screenshot extraction from API failed', {
+                eventId: event.id,
+                frameId: event.frame_id,
+                error: error instanceof Error ? error.message : String(error)
+              });
+            }
+          } else if (event.media_path && shouldKeepVideo) {
+            // Fallback to video file extraction
+            try {
+              screenshotPaths = await this.screenshotService.extractAndStoreScreenshot(
+                event.media_path,
+                event.id,
+                0 // Extract first frame
+              );
+              if (screenshotPaths) {
+                logger.info('📸 Screenshot extracted from video', {
+                  eventId: event.id,
+                  app: event.app,
+                  hasScreenshot: true,
+                  hasThumbnail: true
+                });
+              }
+            } catch (error) {
+              logger.warn('Screenshot extraction failed', {
+                eventId: event.id,
+                error: error instanceof Error ? error.message : String(error)
+              });
+            }
+          }
+
+          // 5. Create memory object
           const memoryObject = this.transformToMemoryObject(event);
 
           // 5. Generate embeddings (always generate for OCR text)
@@ -192,11 +255,14 @@ class IngestBridge {
             );
           }
 
-          // 7. Create complete memory object with embedding
+          // 7. Create complete memory object with embedding and screenshots
           const completeMemoryObject = {
             ...memoryObject,
             thumb_path: thumbnailPath,
             embedding: embeddings,
+            // Add screenshot paths
+            screenshot_path: screenshotPaths?.screenshot || null,
+            thumbnail_path: screenshotPaths?.thumbnail || null,
             // Add metadata about video processing
             video_processed: !!videoProcessingInfo,
             video_kept: shouldKeepVideo,
@@ -219,7 +285,8 @@ class IngestBridge {
             app: event.app,
             textLength: event.ocr_text.length,
             videoKept: shouldKeepVideo,
-            hasThumbnail: !!thumbnailPath
+            hasThumbnail: !!thumbnailPath,
+            hasScreenshot: !!screenshotPaths
           });
           
           processingResults[event.app].success++;
