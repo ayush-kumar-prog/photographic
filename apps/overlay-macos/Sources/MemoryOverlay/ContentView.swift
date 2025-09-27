@@ -47,22 +47,20 @@ struct ContentView: View {
     
     private func configureWindow() {
         DispatchQueue.main.async {
-            if let window = NSApplication.shared.windows.first {
-                window.level = .floating
-                window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-                window.isOpaque = false
-                window.backgroundColor = NSColor.clear
-                window.hasShadow = true
-                
-                // Make window movable but keep it borderless
-                window.styleMask = [.borderless, .resizable]
-                window.isMovableByWindowBackground = true
-                
-                // Window will automatically become key/main when needed
-                
-                print("🎭 Window configured successfully - movable and focusable")
+            if let panel = NSApplication.shared.windows.first {
+                // Panel is already configured in main.swift, just verify settings
+                print("🎭 Panel configuration verified:")
+                print("   - Level: \(panel.level.rawValue)")
+                print("   - Style mask: \(panel.styleMask)")
+                print("   - Is opaque: \(panel.isOpaque)")
+                print("   - Can become key: \(panel.canBecomeKey)")
+                print("   - Accepts first responder: \(panel.acceptsFirstResponder)")
+                if let nsPanel = panel as? NSPanel {
+                    print("   - Is floating panel: \(nsPanel.isFloatingPanel)")
+                    print("   - Becomes key only if needed: \(nsPanel.becomesKeyOnlyIfNeeded)")
+                }
             } else {
-                print("⚠️ No window found to configure")
+                print("⚠️ No panel found to configure")
             }
         }
     }

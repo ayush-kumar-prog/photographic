@@ -1,4 +1,4 @@
-import { Database } from 'sqlite3';
+import sqlite3, { Database } from 'sqlite3';
 import { ChromaClient, Collection, OpenAIEmbeddingFunction } from 'chromadb';
 import OpenAI from 'openai';
 import { LRUCache } from 'lru-cache';
@@ -118,8 +118,17 @@ export class SearchService {
   async initialize(): Promise<void> {
     try {
       // Initialize SQLite database
-      const dbPath = path.join(process.cwd(), '../../data/sqlite/memories.db');
-      this.db = new Database(dbPath);
+      const projectRoot = process.env.PROJECT_ROOT || path.resolve(__dirname, '../../../..');
+      const dbPath = path.join(projectRoot, 'data/sqlite/memories.db');
+      logger.info('Connecting to database', { dbPath });
+      // Note: Opening in normal mode, not read-only, as read-only causes issues with FTS5
+      this.db = new Database(dbPath, (err) => {
+        if (err) {
+          logger.error('Failed to open database', { error: err.message });
+          throw err;
+        }
+        logger.info('Database opened successfully');
+      });
       
       // Initialize ChromaDB
       this.chroma = new ChromaClient({ path: 'http://localhost:8000' });

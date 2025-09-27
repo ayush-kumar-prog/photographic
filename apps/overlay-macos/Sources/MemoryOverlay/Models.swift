@@ -11,6 +11,18 @@ struct SearchResult: Identifiable, Codable, Equatable {
     let score: Double
     let nugget: Nugget?
     
+    // Add CodingKeys to map snake_case from API to camelCase in Swift
+    enum CodingKeys: String, CodingKey {
+        case id
+        case ts
+        case app
+        case urlHost = "url_host"
+        case titleSnippet = "title_snippet"
+        case thumbUrl = "thumb_url"
+        case score
+        case nugget
+    }
+    
     var timestamp: Date {
         Date(timeIntervalSince1970: Double(ts) / 1000.0)
     }

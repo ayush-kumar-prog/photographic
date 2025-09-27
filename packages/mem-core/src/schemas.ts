@@ -50,3 +50,4 @@ export const SearchResponseSchema = z.object({
   cards: z.array(SearchCardSchema),
 });
 
+

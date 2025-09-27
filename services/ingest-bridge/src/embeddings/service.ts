@@ -27,8 +27,10 @@ export class EmbeddingsService {
   private readonly MAX_CONCURRENT = 3; // Rate limiting
   private readonly RETRY_ATTEMPTS = 3;
 
-  constructor(chromaDataDir: string = './data/chroma') {
-    this.chromaDataDir = chromaDataDir;
+  constructor(chromaDataDir: string = '../../data/chroma') {
+    // If running from services/ingest-bridge/dist, go up to project root
+    const projectRoot = process.env.PROJECT_ROOT || path.resolve(__dirname, '../../../..');
+    this.chromaDataDir = path.resolve(projectRoot, 'data/chroma');
     this.queue = new PQueue({ 
       concurrency: this.MAX_CONCURRENT,
       interval: 1000, // 1 second

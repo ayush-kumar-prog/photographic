@@ -9,6 +9,8 @@ import { DatabaseManager } from './database/manager';
 import { EmbeddingsService } from './embeddings/service';
 import { ThumbnailGenerator } from './media/thumbnails';
 import { VideoProcessor } from './media/video-processor';
+import { ScreenshotService } from './screenshots/service';
+import { ScreenshotAPIService } from './screenshots/api-service';
 
 class IngestBridge {
   private screenpipeClient: ScreenpipeClient;
@@ -16,6 +18,8 @@ class IngestBridge {
   private embeddingsService: EmbeddingsService;
   private thumbnailGenerator: ThumbnailGenerator;
   private videoProcessor: VideoProcessor;
+  private screenshotService: ScreenshotService;
+  private screenshotAPIService: ScreenshotAPIService;
   private isRunning = false;
 
   constructor() {
@@ -24,6 +28,8 @@ class IngestBridge {
     this.embeddingsService = new EmbeddingsService();
     this.thumbnailGenerator = new ThumbnailGenerator();
     this.videoProcessor = new VideoProcessor();
+    this.screenshotService = new ScreenshotService();
+    this.screenshotAPIService = new ScreenshotAPIService();
   }
 
   async start() {
@@ -68,8 +74,15 @@ class IngestBridge {
       // Check if Screenpipe is healthy
       try {
         const health = await this.screenpipeClient.healthCheck();
-        if (health.status !== 'healthy') {
-          logger.warn('Screenpipe is not healthy', { status: health.status });
+        // Accept both "healthy" and "degraded" status if frame capture is working
+        const isFrameCaptureWorking = health.frame_status === 'ok';
+        const isAcceptableStatus = health.status === 'healthy' || (health.status === 'degraded' && isFrameCaptureWorking);
+        
+        if (!isAcceptableStatus) {
+          logger.warn('Screenpipe is not healthy', { 
+            status: health.status, 
+            frame_status: health.frame_status 
+          });
           return;
         }
       } catch (error) {
@@ -78,50 +91,156 @@ class IngestBridge {
       }
 
       // Fetch latest events from Screenpipe
-      const events = await this.screenpipeClient.getRecentEvents(undefined, 10);
+      const events = await this.screenpipeClient.getRecentEvents(undefined, 100); // INCREASED TO 100 TO SEE MORE
       
       if (events.length === 0) {
         logger.debug('No new events found');
         return;
       }
 
+      // DEBUG: Log all apps received from Screenpipe
+      const appCounts = events.reduce((acc, e) => {
+        acc[e.app] = (acc[e.app] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      logger.info('🔍 INCOMING APPS FROM SCREENPIPE:', {
+        totalEvents: events.length,
+        uniqueApps: Object.keys(appCounts).length,
+        appBreakdown: appCounts
+      });
+
       logger.info(`Processing ${events.length} new events`);
+
+      // Track processing results
+      const processingResults: Record<string, { success: number; failed: number; skipped: number }> = {};
 
       for (const event of events) {
         try {
+          // Initialize tracking for this app
+          if (!processingResults[event.app]) {
+            processingResults[event.app] = { success: 0, failed: 0, skipped: 0 };
+          }
+
           // 1. Validate event data
           if (!this.validateEvent(event)) {
-            logger.warn('Invalid event data, skipping', { eventId: event.id });
+            logger.warn('❌ VALIDATION FAILED', { 
+              eventId: event.id,
+              app: event.app,
+              hasId: !!event.id,
+              hasTimestamp: !!event.timestamp,
+              hasApp: !!event.app,
+              hasOcrText: !!event.ocr_text,
+              ocrTextLength: event.ocr_text?.length || 0
+            });
+            processingResults[event.app].failed++;
             continue;
           }
 
           // 2. Check if we've already processed this event
           const exists = await this.databaseManager.eventExists(event.id);
           if (exists) {
-            logger.debug('Event already processed, skipping', { eventId: event.id });
+            logger.debug('⏭️ Event already processed', { 
+              eventId: event.id,
+              app: event.app 
+            });
+            processingResults[event.app].skipped++;
             continue;
           }
+
+          logger.debug('✅ Event passed validation', {
+            eventId: event.id,
+            app: event.app,
+            windowTitle: event.window_title?.substring(0, 50)
+          });
 
           // 3. Process video file for similarity checking and cleanup scheduling
           let shouldKeepVideo = true;
           let videoProcessingInfo = null;
           if (event.media_path) {
-            const videoResult = await this.videoProcessor.processVideoFile(
-              event.media_path, 
-              event.ocr_text
-            );
-            shouldKeepVideo = videoResult.shouldKeep;
-            videoProcessingInfo = videoResult;
-            
-            logger.debug('Video processing result', {
-              eventId: event.id,
-              shouldKeep: shouldKeepVideo,
-              similarityScore: videoResult.similarityResult.similarityScore,
-              isDuplicate: videoResult.similarityResult.isDuplicate
-            });
+            try {
+              const videoResult = await this.videoProcessor.processVideoFile(
+                event.media_path, 
+                event.ocr_text
+              );
+              shouldKeepVideo = videoResult.shouldKeep;
+              videoProcessingInfo = videoResult;
+              
+              logger.debug('Video processing result', {
+                eventId: event.id,
+                shouldKeep: shouldKeepVideo,
+                similarityScore: videoResult.similarityResult.similarityScore,
+                isDuplicate: videoResult.similarityResult.isDuplicate
+              });
+            } catch (error) {
+              logger.warn('Video processing failed, continuing without video data', {
+                eventId: event.id,
+                mediaPath: event.media_path,
+                error: error instanceof Error ? error.message : String(error)
+              });
+              // Continue processing the event without video data
+              shouldKeepVideo = false;
+              videoProcessingInfo = null;
+            }
           }
 
-          // 4. Create memory object
+          // 4. Extract screenshot from Screenpipe frame API
+          let screenshotPaths = null;
+          if (event.frame_id) {
+            try {
+              // Convert frame_id from string to number
+              const frameIdNum = parseInt(event.frame_id, 10);
+              if (!isNaN(frameIdNum)) {
+                screenshotPaths = await this.screenshotAPIService.extractAndStoreScreenshot(
+                  frameIdNum,
+                  event.id
+                );
+              } else {
+                logger.warn('Invalid frame_id format', { 
+                  frame_id: event.frame_id, 
+                  event_id: event.id 
+                });
+              }
+              if (screenshotPaths) {
+                logger.info('📸 Screenshot extracted from API', {
+                  eventId: event.id,
+                  frameId: event.frame_id,
+                  app: event.app,
+                  hasScreenshot: true,
+                  hasThumbnail: true
+                });
+              }
+            } catch (error) {
+              logger.warn('Screenshot extraction from API failed', {
+                eventId: event.id,
+                frameId: event.frame_id,
+                error: error instanceof Error ? error.message : String(error)
+              });
+            }
+          } else if (event.media_path && shouldKeepVideo) {
+            // Fallback to video file extraction
+            try {
+              screenshotPaths = await this.screenshotService.extractAndStoreScreenshot(
+                event.media_path,
+                event.id,
+                0 // Extract first frame
+              );
+              if (screenshotPaths) {
+                logger.info('📸 Screenshot extracted from video', {
+                  eventId: event.id,
+                  app: event.app,
+                  hasScreenshot: true,
+                  hasThumbnail: true
+                });
+              }
+            } catch (error) {
+              logger.warn('Screenshot extraction failed', {
+                eventId: event.id,
+                error: error instanceof Error ? error.message : String(error)
+              });
+            }
+          }
+
+          // 5. Create memory object
           const memoryObject = this.transformToMemoryObject(event);
 
           // 5. Generate embeddings (always generate for OCR text)
@@ -136,11 +255,14 @@ class IngestBridge {
             );
           }
 
-          // 7. Create complete memory object with embedding
+          // 7. Create complete memory object with embedding and screenshots
           const completeMemoryObject = {
             ...memoryObject,
             thumb_path: thumbnailPath,
             embedding: embeddings,
+            // Add screenshot paths
+            screenshot_path: screenshotPaths?.screenshot || null,
+            thumbnail_path: screenshotPaths?.thumbnail || null,
             // Add metadata about video processing
             video_processed: !!videoProcessingInfo,
             video_kept: shouldKeepVideo,
@@ -148,25 +270,45 @@ class IngestBridge {
           };
 
           // 8. Store in SQLite database
-          await this.databaseManager.storeMemoryObject(completeMemoryObject);
+          const dbStored = await this.databaseManager.storeMemoryObject(completeMemoryObject);
+          logger.debug('📝 Database storage attempt', {
+            eventId: event.id,
+            app: event.app,
+            stored: dbStored
+          });
 
           // 9. Store embedding in Chroma vector database
           await this.embeddingsService.storeEmbedding(completeMemoryObject);
 
-          logger.debug('Successfully processed event', { 
+          logger.info('✅ SUCCESSFULLY PROCESSED EVENT', { 
             eventId: event.id, 
             app: event.app,
             textLength: event.ocr_text.length,
             videoKept: shouldKeepVideo,
-            hasThumbnail: !!thumbnailPath
+            hasThumbnail: !!thumbnailPath,
+            hasScreenshot: !!screenshotPaths
           });
+          
+          processingResults[event.app].success++;
         } catch (error: any) {
-          logger.error('Failed to process individual event', { 
-            eventId: event.id, 
-            error: error.message 
+          logger.error('❌ FAILED TO PROCESS EVENT', { 
+            eventId: event.id,
+            app: event.app,
+            error: error.message,
+            errorStack: error.stack
           });
+          processingResults[event.app].failed++;
         }
       }
+      
+      // Log processing summary
+      logger.info('📊 PROCESSING SUMMARY:', {
+        totalEvents: events.length,
+        processingResults,
+        successTotal: Object.values(processingResults).reduce((sum, r) => sum + r.success, 0),
+        failedTotal: Object.values(processingResults).reduce((sum, r) => sum + r.failed, 0),
+        skippedTotal: Object.values(processingResults).reduce((sum, r) => sum + r.skipped, 0)
+      });
     } catch (error) {
       logger.error('Error in processNewEvents:', error);
     }
@@ -178,8 +320,8 @@ class IngestBridge {
       typeof event.id === 'string' &&
       typeof event.timestamp === 'number' &&
       typeof event.app === 'string' &&
-      typeof event.ocr_text === 'string' &&
-      event.ocr_text.length > 0
+      typeof event.ocr_text === 'string'
+      // Removed requirement for non-empty OCR text - some events have minimal text but are still valid
     );
   }
 

@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct LiquidSearchBar: View {
     @EnvironmentObject var searchManager: SearchManager
@@ -101,23 +102,32 @@ struct LiquidSearchBar: View {
             .padding(.horizontal, 20)
         }
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                isSearchFocused = true
-                print("🎯 Search bar focused on appear")
-            }
+            // Wait for window to be properly configured and key before focusing
+            waitForWindowKeyThenFocus()
         }
         .onChange(of: shouldFocus) { _, newValue in
             if newValue {
-                DispatchQueue.main.async {
-                    isSearchFocused = true
-                    print("🎯 Search bar focused via binding")
-                }
+                waitForWindowKeyThenFocus()
             }
         }
     }
     
     private func triggerRipple() {
         rippleTrigger.toggle()
+    }
+    
+    private func waitForWindowKeyThenFocus() {
+        // Force focus immediately - bypass window key checks for now
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.isSearchFocused = true
+            print("🎯 Force focusing search bar...")
+            
+            // Also try to make the window first responder
+            if let window = NSApplication.shared.windows.first {
+                window.makeFirstResponder(window.contentView)
+                print("✅ Made window first responder")
+            }
+        }
     }
 }
 

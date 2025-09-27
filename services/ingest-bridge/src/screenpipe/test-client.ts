@@ -104,11 +104,11 @@ class ScreenpipeClientTester {
       resultCount: result.data.length,
       totalAvailable: result.pagination.total,
       sampleResults: result.data.slice(0, 2).map(item => ({
-        timestamp: item.timestamp,
-        app: item.app_name,
-        window: item.window_name,
-        ocrLength: item.ocr_text?.length || 0,
-        hasFrameId: !!item.frame_id
+        timestamp: item.content.timestamp,
+        app: item.content.app_name,
+        window: item.content.window_name,
+        ocrLength: item.content.text?.length || 0,
+        hasFrameId: !!item.content.frame_id
       }))
     };
   }
