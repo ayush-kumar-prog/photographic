@@ -198,5 +198,5 @@ struct MemoryCard: View {
 - ❌ No screenshots are saved
 - ❌ Search only matches app names
 - ❌ UI shows text, not images
-
+- 
 **The fix is straightforward but requires updates across the pipeline.**
