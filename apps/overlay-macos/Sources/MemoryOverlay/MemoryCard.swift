@@ -138,7 +138,9 @@ struct MemoryCard: View {
     }
     
     private var highlightedTitle: AttributedString {
-        var attributedString = AttributedString(memory.titleSnippet)
+        // Use windowTitle if available, otherwise fall back to titleSnippet
+        let displayTitle = memory.windowTitle ?? memory.titleSnippet
+        var attributedString = AttributedString(displayTitle)
         
         if let nugget = memory.nugget {
             if let range = attributedString.range(of: nugget.value) {
@@ -168,6 +170,7 @@ struct MemoryCard: View {
                 app: "Safari",
                 urlHost: "amazon.com",
                 titleSnippet: "OMEGA Seamaster Aqua Terra — $3,495",
+                windowTitle: "Amazon.com: OMEGA Seamaster Watch",
                 thumbUrl: nil,
                 score: 0.95,
                 nugget: Nugget(type: "price", value: "$3,495", confidence: 0.9)
@@ -179,6 +182,7 @@ struct MemoryCard: View {
                 app: "YouTube",
                 urlHost: "youtube.com",
                 titleSnippet: "Microeconomics Explained - Khan Academy",
+                windowTitle: "Khan Academy - Microeconomics Course",
                 thumbUrl: nil,
                 score: 0.87,
                 nugget: Nugget(type: "title", value: "Microeconomics Explained", confidence: 0.85)

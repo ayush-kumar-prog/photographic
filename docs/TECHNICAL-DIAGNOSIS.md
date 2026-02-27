@@ -200,3 +200,5 @@ struct MemoryCard: View {
 - ❌ UI shows text, not images
 - 
 **The fix is straightforward but requires updates across the pipeline.**
+
+

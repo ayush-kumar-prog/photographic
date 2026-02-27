@@ -27,6 +27,8 @@ export interface MemoryObjectWithEmbedding extends MemoryObject {
   video_processed?: boolean;     // Whether video processing was attempted
   video_kept?: boolean;          // Whether video file was kept after deduplication
   similarity_score?: number;     // Similarity score from video processing
+  screenshot_path?: string | null;  // Path to extracted screenshot
+  thumbnail_path?: string | null;   // Path to generated thumbnail
 }
 
 /**

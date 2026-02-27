@@ -7,6 +7,7 @@ struct SearchResult: Identifiable, Codable, Equatable {
     let app: String
     let urlHost: String?
     let titleSnippet: String
+    let windowTitle: String?
     let thumbUrl: String?
     let score: Double
     let nugget: Nugget?
@@ -18,6 +19,7 @@ struct SearchResult: Identifiable, Codable, Equatable {
         case app
         case urlHost = "url_host"
         case titleSnippet = "title_snippet"
+        case windowTitle = "window_title"
         case thumbUrl = "thumb_url"
         case score
         case nugget

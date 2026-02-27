@@ -168,3 +168,5 @@ export class ScreenshotAPIService {
     return `/thumbnails/${eventId}_thumb.jpg`;
   }
 }
+
+

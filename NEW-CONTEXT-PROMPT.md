@@ -28,3 +28,5 @@ You are taking over development of a Photographic Memory desktop app. Read these
 The system is 80% complete but the core functionality is broken due to this selective storage bug. Fix this first, then implement screenshot pipeline, content indexing, and visual UI.
 
 Project path: `/Users/kumar/Documents/Projects/memories`
+
+

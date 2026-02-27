@@ -39,3 +39,4 @@ export function extractDominantColors(imagePath: string): Promise<string[]> {
   return Promise.resolve(['#ffffff', '#000000']);
 }
 
+

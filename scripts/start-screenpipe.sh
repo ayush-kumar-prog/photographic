@@ -58,35 +58,34 @@ fi
 echo -e "${BLUE}⚙️  Configuring Screenpipe for MVP...${NC}"
 
 # MVP Settings:
-# - FPS: 0.5 (30 GB/month, good for testing)
+# - FPS: 0.25 (1 capture every 4 seconds)
 # - Port: 3030 (default)
 # - OCR: Apple Native (best for macOS)
 # - Audio: Disabled for MVP focus on vision
 # - Debug: Enabled for development
 # - Data dir: Our project data directory
 # - UI monitoring: Enabled for better metadata
-# - Frame cache: Enabled for thumbnails
+# - Frame cache: DISABLED to create video files for screenshots
 
 SCREENPIPE_ARGS=(
-    --fps 0.5
+    --fps 0.25
     --port 3030
     --data-dir "${DATA_DIR}"
     --ocr-engine apple-native
     --disable-audio
     --debug
     --enable-ui-monitoring
-    --enable-frame-cache
     --capture-unfocused-windows
 )
 
 echo -e "${GREEN}✅ MVP Configuration:${NC}"
-echo "   • FPS: 0.5 (optimized for development)"
+echo "   • FPS: 0.25 (1 capture every 4 seconds)"
 echo "   • Port: 3030"
 echo "   • OCR Engine: Apple Native"
 echo "   • Audio: Disabled (MVP focuses on vision)"
 echo "   • Debug: Enabled"
 echo "   • UI Monitoring: Enabled"
-echo "   • Frame Cache: Enabled"
+echo "   • Frame Cache: DISABLED (creating video files)"
 echo "   • Data Directory: ${DATA_DIR}"
 
 # Check macOS permissions

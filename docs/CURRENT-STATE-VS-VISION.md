@@ -238,3 +238,5 @@ The difference between current and target state is the difference between:
 When complete, this should feel like having a photographic memory. Users should be able to recall anything they've seen on their screen with natural language queries, and see the actual visual memory, not just metadata about it.
 
 **This is the difference between a utility and magic.**
+
+

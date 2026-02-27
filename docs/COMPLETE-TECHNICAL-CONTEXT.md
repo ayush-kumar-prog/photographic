@@ -530,3 +530,5 @@ You have a system where:
 The fixes are straightforward but require careful debugging of the Ingest Bridge to find why it's filtering apps. Once that's fixed, the rest is just adding the screenshot pipeline and updating the UI to display images.
 
 **Start with Fix #1** - Add logging to find why Cursor/Terminal/Chrome aren't being stored. Everything else depends on this.
+
+

@@ -125,7 +125,7 @@ class SearchManager: ObservableObject {
     @Published var queryParsed: QueryParsed?
     
     private var cancellables = Set<AnyCancellable>()
-    private let searchAPIURL = "http://localhost:3032"
+    private let searchAPIURL = "http://localhost:3002"
     
     enum SearchMode {
         case exact
@@ -222,6 +222,7 @@ class SearchManager: ObservableObject {
                 app: "Safari",
                 urlHost: "amazon.com",
                 titleSnippet: "OMEGA Seamaster Aqua Terra — $3,495",
+                windowTitle: "Amazon.com: OMEGA Seamaster Watch",
                 thumbUrl: nil,
                 score: 0.95,
                 nugget: Nugget(type: "price", value: "$3,495", confidence: 0.9)
@@ -236,6 +237,7 @@ class SearchManager: ObservableObject {
                 app: "Safari",
                 urlHost: "youtube.com",
                 titleSnippet: "Microeconomics Explained - Khan Academy",
+                windowTitle: "Khan Academy - Microeconomics Course",
                 thumbUrl: nil,
                 score: 0.87,
                 nugget: Nugget(type: "title", value: "Microeconomics Explained", confidence: 0.85)
@@ -250,6 +252,7 @@ class SearchManager: ObservableObject {
                 app: "Terminal",
                 urlHost: nil,
                 titleSnippet: "npm install --save-dev typescript @types/node",
+                windowTitle: "Terminal - npm install",
                 thumbUrl: nil,
                 score: 0.82,
                 nugget: Nugget(type: "command", value: "npm install", confidence: 0.8)
@@ -264,6 +267,7 @@ class SearchManager: ObservableObject {
                 app: "Cursor",
                 urlHost: nil,
                 titleSnippet: "SwiftUI Liquid Glass Material Implementation",
+                windowTitle: "Cursor - SwiftUI Implementation",
                 thumbUrl: nil,
                 score: 0.91,
                 nugget: Nugget(type: "code", value: "LiquidGlassMaterial", confidence: 0.88)
@@ -278,6 +282,7 @@ class SearchManager: ObservableObject {
                 app: "Safari",
                 urlHost: "github.com",
                 titleSnippet: "Search results for: \(query)",
+                windowTitle: "Demo: Invitation to meet Cory Levy",
                 thumbUrl: nil,
                 score: 0.65,
                 nugget: nil
@@ -342,6 +347,7 @@ class SearchManager: ObservableObject {
                 app: "Safari",
                 urlHost: "amazon.com",
                 titleSnippet: "OMEGA Seamaster Aqua Terra — $3,495",
+                windowTitle: "Amazon.com: OMEGA Seamaster Watch",
                 thumbUrl: nil,
                 score: 0.95,
                 nugget: Nugget(type: "price", value: "$3,495", confidence: 0.9)
@@ -352,6 +358,7 @@ class SearchManager: ObservableObject {
                 app: "YouTube",
                 urlHost: "youtube.com",
                 titleSnippet: "Microeconomics Explained - Khan Academy",
+                windowTitle: "Khan Academy - Microeconomics Course",
                 thumbUrl: nil,
                 score: 0.87,
                 nugget: Nugget(type: "title", value: "Microeconomics Explained", confidence: 0.85)

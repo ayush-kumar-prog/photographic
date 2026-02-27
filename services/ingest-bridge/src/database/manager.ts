@@ -22,6 +22,8 @@ interface DatabaseRow {
   video_processed: number; // SQLite boolean (0/1)
   video_kept: number;      // SQLite boolean (0/1)
   similarity_score: number;
+  screenshot_path: string | null;
+  thumbnail_path: string | null;
 }
 
 export class DatabaseManager {
@@ -101,6 +103,8 @@ export class DatabaseManager {
           video_processed INTEGER DEFAULT 0,
           video_kept INTEGER DEFAULT 1,
           similarity_score REAL DEFAULT 0.0,
+          screenshot_path TEXT,
+          thumbnail_path TEXT,
           created_at INTEGER DEFAULT (strftime('%s', 'now'))
         )
       `);
@@ -178,7 +182,9 @@ export class DatabaseManager {
         windowTitle: memoryObject.window_title?.substring(0, 50),
         textLength: memoryObject.ocr_text?.length || 0,
         hasEmbedding: !!memoryObject.embedding,
-        videoProcessed: memoryObject.video_processed
+        videoProcessed: memoryObject.video_processed,
+        hasScreenshot: !!memoryObject.screenshot_path,
+        hasThumbnail: !!memoryObject.thumbnail_path
       });
 
       // Prepare data for insertion
@@ -198,7 +204,9 @@ export class DatabaseManager {
         memoryObject.topics ? JSON.stringify(memoryObject.topics) : null,
         memoryObject.video_processed ? 1 : 0,
         memoryObject.video_kept !== false ? 1 : 0, // Default to true
-        memoryObject.similarity_score || 0.0
+        memoryObject.similarity_score || 0.0,
+        memoryObject.screenshot_path || null,
+        memoryObject.thumbnail_path || null
       ];
 
       // Insert into main table (triggers will handle FTS5)
@@ -206,8 +214,8 @@ export class DatabaseManager {
         INSERT OR REPLACE INTO memories (
           id, ts, session_id, app, window_title, url, url_host,
           media_path, thumb_path, ocr_text, asr_text, entities, topics,
-          video_processed, video_kept, similarity_score
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          video_processed, video_kept, similarity_score, screenshot_path, thumbnail_path
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, params, function(err) {
         if (err) {
           logger.error('❌ DATABASE STORAGE FAILED', {
